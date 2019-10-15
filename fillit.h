@@ -28,6 +28,14 @@ typedef struct		s_fig
 	struct s_part	*next;
 }					t_fig;
 
+typedef struct		s_errors
+{
+	int				touch;
+	int				nl;
+	int				obj;
+	int				dot;
+	int				i;
+}					t_errors;
 //# if (BUFF_SIZE < 1)
 //#  error "BUFF_SIZE must be strictly positive"
 //# endif
