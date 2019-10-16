@@ -37,4 +37,5 @@ typedef struct		s_errors
 	int				dot;
 	int				i;
 }					t_errors;
+t_fig				*get_next_fig(int fd);
 #endif

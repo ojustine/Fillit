@@ -11,19 +11,24 @@
 /* ************************************************************************** */
 
 #include "fillit.h"
+#include <stdio.h>
 
 int	main(int argc, char **argv)
 {
 	int		fd;
-	char	*buf;
 	t_fig	*fig;
 
 	if (argc != 2)
 		write(2, "usage: ./fillit source_file", 27);
-	fd = open(argv[1], O_RDONLY);
-	if ((parts = get_all_figs(fd)) == NULL)
-		write(2, "error", 5);
-	close(fd);
+//	if ((fd = open(argv[1], O_RDONLY) < 0))
+//		write(2, "error", 5);
+	fd = open("test", O_RDONLY | O_BINARY);
+//	if ((parts = get_all_figs(fd)) == NULL)
+//		write(2, "error", 5);
+	fig = get_next_fig(fd);
+	//close(fd);
+	printf("%d", fig->points[0][0]);
+	//write(1, fig->sym, 1);
 	//solve();
 	return (0);
 }

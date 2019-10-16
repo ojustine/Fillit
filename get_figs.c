@@ -1,3 +1,5 @@
+#pragma clang diagnostic push
+#pragma ide diagnostic ignored "EmptyDeclOrStmt"
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
@@ -12,7 +14,7 @@
 
 #include "fillit.h"
 
-static int		is_valid(char *buf)
+static int		is_valid(const char *buf)
 {
 	t_errors err = {0, 0, 0, 0, 0};
 
@@ -41,11 +43,39 @@ static int		is_valid(char *buf)
 	return (1);
 }
 
+static int		shift_fig(const char *buf, int axis)
+{
+	int	shift;
+	int	x;
+	int	y;
+
+	shift = 0;
+	x = 0;
+	y = 0;
+	if (axis == X)
+	{
+		while (buf[x] != '#')
+			if (buf[x++] == '\n')
+				shift++;
+	}
+	else
+	{
+		while (buf[y++ * 5 + x] != '#')
+			if (y == 4)
+			{
+				y = 0;
+				x++;
+				shift++;
+			}
+	}
+	return (shift);
+}
+
 static t_fig	*conv_str_to_fig(char *buf, char sym)
 {
 	t_fig	*fig;
-	int		i;
-	int		j;
+	int		y;
+	int		x;
 	int		shift_x;
 	int		shift_y;
 
@@ -53,19 +83,17 @@ static t_fig	*conv_str_to_fig(char *buf, char sym)
 	fig->sym = sym;
 	shift_x = shift_fig(buf, X);
 	shift_y = shift_fig(buf, Y);
-	i = 0;
-	while (++i < 4)
+	y = 0;
+	while (y < 4)
 	{
-		j = 0;
-		while (++j < 4)
-		{
-			if (buf[i * 5 + j] == '#') {
-				fig->points[i][X] = (j - shift_x);
-				fig->points[i][Y] = (i - shift_y);
+		x = -1;
+		while (++x < 4)
+			if (buf[y * 5 + x] == '#')
+			{
+				fig->points[y][X] = (x - shift_x);
+				fig->points[y][Y] = (y - shift_y);
 			}
-			j++;
-		}
-		i++;
+		y++;
 	}
 	return (fig);
 }
@@ -73,14 +101,15 @@ static t_fig	*conv_str_to_fig(char *buf, char sym)
 t_fig			*get_next_fig(int fd)
 {
 	t_fig	*fig;
-	char	buf[22];
-	int		reads;
+	char	buf[23];
+	ssize_t	reads;
 
-	CHECK_NULL((reads = read(fd, buf, 21) > 19);
+	//CHECK_NULL(reads = read(fd, buf, 21) > 19);
+	reads = read(fd, buf, 22);
 	if (reads == 20)
-		reads++
+		reads++;
 	buf[reads] = '\0';
 	CHECK_NULL(is_valid(buf));
-	CHECK_NULL(fig = conv_str_to_fig(buf));
+	CHECK_NULL(fig = conv_str_to_fig(buf, 'A'));
 	return (fig);
 }
