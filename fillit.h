@@ -6,7 +6,7 @@
 /*   By: ojustine <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/14 14:33:12 by ojustine          #+#    #+#             */
-/*   Updated: 2019/10/16 11:55:03 by ojustine         ###   ########.fr       */
+/*   Updated: 2019/10/17 11:47:40 by ojustine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 # define X 0
 # define Y 1
 # define CHECK_NULL(x) if (!(x)) return (NULL);
-# define CHECK_INT(x) if (!(x)) return (-1);
+# define CHECK_INT(x) if (!(x)) return (0);
 
 # include <stdlib.h>
 # include <string.h>
