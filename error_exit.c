@@ -12,15 +12,15 @@
 
 #include "fillit.h"
 
-void error_exit(int err_code)
+void	error_exit(int err_code)
 {
 	if (err_code == 0)
 	{
-		write(2, "usage: ./fillit source_file", 27);
+		write(2, "usage: ./fillit source_file\n", 28);
 	}
 	else if (err_code == 1)
 	{
-		write(2, "error", 5);
+		write(2, "error\n", 6);
 	}
 	exit(err_code);
 }

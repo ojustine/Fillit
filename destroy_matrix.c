@@ -1,30 +1,42 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   add_figs_to_list.c                                 :+:      :+:    :+:   */
+/*   destroy_matrix.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: ojustine <ojustine@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2019/10/18 17:48:04 by ojustine          #+#    #+#             */
-/*   Updated: 2019/10/29 15:53:01 by ojustine         ###   ########.fr       */
+/*   Created: 2019/10/31 15:17:01 by ojustine          #+#    #+#             */
+/*   Updated: 2019/10/31 17:13:40 by ojustine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "fillit.h"
 
-void	add_figs_to_list(t_row **root, t_row *fig)
+void	destroy_matrix(t_row *root, t_col **cols, int size)
 {
-	t_row *tmp;
+	t_row	*tmp_row;
+	t_row	*beg_row;
+	t_node	*tmp_node;
+	int		i;
 
-	if (!(*root)->down)
+	beg_row = root->up;
+	while (root != beg_row)
 	{
-		(*root)->down = *root;
-		(*root)->up = *root;
-		(*root)->name = '*';
+		tmp_row = root;
+		root = root->down;
+		free(tmp_row);
 	}
-	tmp = (*root)->up;
-	tmp->down = fig;
-	tmp->down->down = *root;
-	tmp->down->up = tmp;
-	(*root)->up = tmp->down;
+	free(root);
+	i = -1;
+	while (++i < size * size)
+	{
+		while (cols[i]->length--)
+		{
+			tmp_node = cols[i]->head;
+			cols[i]->head = cols[i]->head->down;
+			free(tmp_node);
+		}
+		free(cols[i]);
+	}
+	free(cols);
 }
