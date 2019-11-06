@@ -36,5 +36,5 @@ int	main(int argc, char **argv)
 		error_exit(1);
 	}
 	solve(&root);
-	return (0);
+	exit (0);
 }

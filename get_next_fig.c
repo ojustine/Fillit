@@ -102,7 +102,8 @@ static t_row	*conv_str_to_fig(char *buf, t_row *fig, char name)
 			if (buf[y * 5 + x] == '#')
 			{
 				fig->points[point][X] = (x - shift_x);
-				fig->points[point++][Y] = (y - shift_y);
+				fig->points[point][Y] = (y - shift_y);
+				point++;
 			}
 		y++;
 	}

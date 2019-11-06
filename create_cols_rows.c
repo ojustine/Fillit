@@ -6,7 +6,7 @@
 /*   By: ojustine <ojustine@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/31 11:44:30 by ojustine          #+#    #+#             */
-/*   Updated: 2019/10/31 14:54:43 by ojustine         ###   ########.fr       */
+/*   Updated: 2019/11/05 12:41:47 by ojustine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,7 +82,6 @@ static t_row	*create_rows(t_row *figs_lst, int size)
 {
 	t_row	*figs;
 	t_row	*rows;
-	t_row	*root;
 	int		shift_x;
 	int		shift_y;
 
@@ -100,23 +99,24 @@ static t_row	*create_rows(t_row *figs_lst, int size)
 		}
 		figs = figs->down;
 	}
-	root = rows->down;
-	return (root);
+	if (rows)
+		return (rows->down);
+	else
+		return (NULL);
 }
 
-t_row			*create_cols_rows(t_row *figs_lst, t_col ***cols_ptr, int size)
+t_row			*create_cols_rows(t_row *figs_lst, t_col ***cols_ptr, int *size)
 {
 	t_row	*root;
 	t_row	*rows;
 
 	rows = NULL;
-	create_cols(cols_ptr, size);
-	rows = create_rows(figs_lst, size);
-	if (!rows)
-		error_exit(1);
+	while ((rows = create_rows(figs_lst, *size)) == NULL)
+		(*size)++;
+	create_cols(cols_ptr, *size);
 	if (!(root = (t_row*)malloc(sizeof(t_row))))
 		error_exit(1);
-	root->name = '*';
+	root->name = '\0';
 	root->down = rows;
 	root->up = rows->up;
 	root->up->down = root;

@@ -6,7 +6,7 @@
 /*   By: ojustine <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/14 14:33:12 by ojustine          #+#    #+#             */
-/*   Updated: 2019/11/01 15:36:58 by ojustine         ###   ########.fr       */
+/*   Updated: 2019/11/06 17:19:53 by ojustine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,28 +71,21 @@ typedef struct		s_tet_params
 	ssize_t			i;
 }					t_tet_params;
 
-typedef struct		s_rstack
+typedef struct		s_stack
 {
-	int 			depth;
-	struct s_row	*row;
-	struct s_rstack	*next;
-}					t_rstack;
-
-typedef struct		s_cstack
-{
-	int 			depth;
-	struct s_col	*col;
-	struct s_cstack	*next;
-}					t_cstack;
+	int 			is_row;
+	void			*data;
+}					t_stack;
 
 ssize_t				get_next_fig(int fd, t_row **figs);
 void				error_exit(int err_code);
 void				add_figs_to_list(t_row **root, t_row *figs);
 void				solve(t_row **root);
 t_row				*create_cols_rows(t_row *figs_lst, t_col ***cols_ptr,
-					int size);
+					int *size);
 void				link_matrix(t_row *root, t_col **cols, int size);
 void				destroy_matrix(t_row *root, t_col **cols, int size);
-int					algorithm_x(t_row *root, t_row **sol, int figs_count,
+int					algorithm_x(t_row *root, t_row ***sol, int figs_count,
 					int depth);
+void				print_solution(t_row **sol, int figs_count, int size);
 #endif

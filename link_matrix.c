@@ -6,7 +6,7 @@
 /*   By: ojustine <ojustine@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/31 11:46:16 by ojustine          #+#    #+#             */
-/*   Updated: 2019/10/31 15:11:25 by ojustine         ###   ########.fr       */
+/*   Updated: 2019/11/05 16:24:09 by ojustine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,16 +14,16 @@
 
 static void	insert_node_in_row(t_node *head, t_node *new)
 {
-	new->left = head;
-	new->right = head->right;
+	new->right = head;
+	new->left = head->left;
 	new->left->right = new;
 	new->right->left = new;
 }
 
 static void	insert_node_in_col(t_node *head, t_node *new)
 {
-	new->up = head;
-	new->down = head->down;
+	new->down = head;
+	new->up = head->up;
 	new->up->down = new;
 	new->down->up = new;
 }
