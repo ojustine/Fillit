@@ -6,7 +6,7 @@
 /*   By: ojustine <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/14 14:33:12 by ojustine          #+#    #+#             */
-/*   Updated: 2019/11/06 17:19:53 by ojustine         ###   ########.fr       */
+/*   Updated: 2019/11/07 14:25:20 by ojustine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 # define FILLIT_H
 # define X 0
 # define Y 1
+# define DOWN down
 # define MAX_FIGS_COUNT 26
 # define START_SYM 'A'
 # if (START_SYM < 32 || START_SYM > 126)
@@ -85,7 +86,7 @@ t_row				*create_cols_rows(t_row *figs_lst, t_col ***cols_ptr,
 					int *size);
 void				link_matrix(t_row *root, t_col **cols, int size);
 void				destroy_matrix(t_row *root, t_col **cols, int size);
-int					algorithm_x(t_row *root, t_row ***sol, int figs_count,
+int					algorithm_x(t_row *root, t_row ***sol, int f_count,
 					int depth);
 void				print_solution(t_row **sol, int figs_count, int size);
 #endif
