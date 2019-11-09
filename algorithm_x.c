@@ -6,7 +6,7 @@
 /*   By: ojustine <ojustine@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/31 18:04:22 by ojustine          #+#    #+#             */
-/*   Updated: 2019/11/07 16:26:57 by ojustine         ###   ########.fr       */
+/*   Updated: 2019/11/09 19:16:21 by ojustine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -97,44 +97,27 @@ static void		uncover_col(t_col *col)
 int				algorithm_x(t_row *root, t_row ***sol, int f_count, int depth)
 {
 	t_row		*curr_row;
-	t_row		*clone;
 	t_col		*colStack[1000];
 	t_row		*rowStack[1000];
 	int 		rowcov = 0;
 	int 		colcov = 0;
+	int 		solved;
 
 	curr_row = root->down;
 	while (curr_row != root)
 	{
 		(*sol)[depth] = curr_row;
-		clone = root->down;
-		while (clone != root && clone->name != curr_row->name + 1)
-		{
-			if (clone->name == curr_row->name && clone != curr_row)
-				rowStack[rowcov++] = cover_row(clone);
-			clone = clone->down;
-		}
-		t_node *slide = curr_row->head;
-		do{
-			t_node *deletor = slide->down;
-			while(deletor != slide){
-				rowStack[rowcov++] = cover_row(deletor->row);
-				deletor = deletor->down;
-			}
-			colStack[colcov++] = slide->col;
-			slide = slide->right;
-		}while(slide != curr_row->head);
-		rowStack[rowcov++] = cover_row(curr_row);
-		for (int i = 0; i < colcov; i++)
-			cover_col(colStack[i]);
-
-		if (algorithm_x(root, sol, f_count, depth + 1) == 1)
-			return (1);
+		rowStack[0] = root;
+		rowStack[1] = curr_row;
+		cover(&rowStack, &colStack, &rowcov, &colcov);
+		solved = algorithm_x(root, sol, f_count, depth + 1);
 
 		while(colcov > 0)
 			uncover_col(colStack[--colcov]);
 		while(rowcov > 0)
 			uncover_row(rowStack[--rowcov]);
+		if (solved)
+			return (1);
 		curr_row = curr_row->down;
 	}
 	return ((depth == f_count) ? 1 : 0);

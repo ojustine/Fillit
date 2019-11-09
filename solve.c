@@ -6,11 +6,20 @@
 /*   By: ojustine <ojustine@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/26 15:08:37 by ojustine          #+#    #+#             */
-/*   Updated: 2019/11/06 16:06:09 by ojustine         ###   ########.fr       */
+/*   Updated: 2019/11/09 16:57:48 by ojustine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "fillit.h"
+
+/*
+**	Accepts a number of figures. Returns the size of the minimum square
+**	in which these figures can be placed.
+**	Explanation:
+**	All figures consist of four objects ("#").
+**	That is, a square with side N can contain (N ^ 2) / 4 figures,
+**	if all of them are squares.
+*/
 
 static int	get_min_matrix_size(int figs_count)
 {
@@ -22,10 +31,15 @@ static int	get_min_matrix_size(int figs_count)
 	return (size);
 }
 
+/*
+**	It brings together all parts of the program.
+**	Before exiting, cleans the memory.
+*/
+
 void		solve(t_row **figs_lst)
 {
 	int		size;
-	int 	figs_count;
+	int		figs_count;
 	t_row	*root;
 	t_col	**cols_ptr;
 	t_row	**sol;
@@ -45,4 +59,6 @@ void		solve(t_row **figs_lst)
 		link_matrix(root, cols_ptr, size);
 	}
 	print_solution(sol, figs_count, size);
+	free(sol);
+	destroy_matrix(root, cols_ptr, size);
 }

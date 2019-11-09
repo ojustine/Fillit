@@ -3,45 +3,64 @@
 /*                                                        :::      ::::::::   */
 /*   get_next_fig.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ojustine <ojustine@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ojustine <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/31 11:43:50 by ojustine          #+#    #+#             */
-/*   Updated: 2019/11/01 15:06:19 by ojustine         ###   ########.fr       */
+/*   Updated: 2019/11/09 14:52:05 by ojustine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "fillit.h"
 
 /*
+**	Returns the number of touches for this object with other objects
+*/
+
+static int		object_touches(int i, const char *obj)
+{
+	int touches;
+
+	touches = 0;
+	touches += (*obj == OBJ_SYM && *(obj + 1) == OBJ_SYM);
+	touches += (i > 0 && *obj == OBJ_SYM && *(obj - 1) == OBJ_SYM);
+	touches += (i < 16 && *obj == OBJ_SYM && *(obj + 5) == OBJ_SYM);
+	touches += (i > 4 && *obj == OBJ_SYM && *(obj - 5) == OBJ_SYM);
+	return (touches);
+}
+
+/*
 **	Checks tetramino contained in string buffer
+**	A valid tetramino must contain 4 objects, 12 dots,
+**	5 line breaks or 4 line breaks and 1 null-terminator.
+**	Each object must touch at least one other object
 */
 
 static int		is_valid(const char *buf)
 {
-	t_tet_params pr;
+	t_tet_params par;
 
-	pr.dot = 0;
-	pr.obj = 0;
-	pr.con = 0;
-	pr.nl = 0;
-	pr.i = -1;
+	par.dot = 0;
+	par.obj = 0;
+	par.touches = 0;
+	par.nl = 0;
+	par.i = -1;
 	if (!(buf[4] == '\n' && buf[9] == '\n' && buf[14] == '\n'
 		&& buf[19] == '\n' && (buf[20] == '\n' || buf[20] == '\0')))
 		return (-1);
-	while (buf[++pr.i])
+	while (buf[++par.i])
 	{
-		CHECK_INT(buf[pr.i] == '#' || buf[pr.i] == '.' || buf[pr.i] == '\n');
-		pr.obj += (buf[pr.i] == '#');
-		pr.con += (buf[pr.i] == '#' && buf[pr.i + 1] == '#');
-		pr.con += (pr.i > 0 && buf[pr.i] == '#' && buf[pr.i - 1] == '#');
-		pr.con += (pr.i < 16 && buf[pr.i] == '#' && buf[pr.i + 5] == '#');
-		pr.con += (pr.i > 4 && buf[pr.i] == '#' && buf[pr.i - 5] == '#');
-		pr.dot += (buf[pr.i] == '.');
-		pr.nl += (buf[pr.i] == '\n');
+		if (!(buf[par.i] == OBJ_SYM || buf[par.i] == '.' || buf[par.i] == '\n'))
+			return (-1);
+		if (buf[par.i] == OBJ_SYM)
+		{
+			par.obj++;
+			par.touches += object_touches(par.i, &buf[par.i]);
+		}
+		par.dot += (buf[par.i] == '.');
+		par.nl += (buf[par.i] == '\n');
 	}
-	CHECK_INT(pr.obj == 4 && pr.dot == 12 && pr.nl > 3 && pr.nl < 6);
-	CHECK_INT(pr.con == 6 || pr.con == 8);
-	return (1);
+	return (par.obj == 4 && par.dot == 12 && par.nl > 3 && par.nl < 6
+			&& (par.touches == 6 || par.touches == 8));
 }
 
 /*
@@ -61,13 +80,13 @@ static int		shift_fig_to_0(const char *buf, int axis)
 	y = 0;
 	if (axis == Y)
 	{
-		while (buf[x] != '#')
+		while (buf[x] != OBJ_SYM)
 			if (buf[x++] == '\n')
 				shift++;
 	}
 	else
 	{
-		while (buf[y++ * 5 + x] != '#')
+		while (buf[y++ * 5 + x] != OBJ_SYM)
 			if (y == 4)
 			{
 				y = 0;
@@ -82,7 +101,7 @@ static int		shift_fig_to_0(const char *buf, int axis)
 **	Converts tetramino contained in the string buffer into a structure
 */
 
-static t_row	*conv_str_to_fig(char *buf, t_row *fig, char name)
+static t_row	*conv_str_to_struct(char *buf, t_row *fig, char name)
 {
 	int		y;
 	int		x;
@@ -99,7 +118,7 @@ static t_row	*conv_str_to_fig(char *buf, t_row *fig, char name)
 	{
 		x = -1;
 		while (++x < 4)
-			if (buf[y * 5 + x] == '#')
+			if (buf[y * 5 + x] == OBJ_SYM)
 			{
 				fig->points[point][X] = (x - shift_x);
 				fig->points[point][Y] = (y - shift_y);
@@ -120,14 +139,17 @@ ssize_t			get_next_fig(int fd, t_row **fig)
 {
 	char			buf[22];
 	ssize_t			reads;
-	static char		sym = START_SYM;
+	static char		name = START_SYM;
 
-	CHECK_INT(sym - START_SYM < MAX_FIGS_COUNT);
-	if ((reads = read(fd, buf, 21)) == 0)
-		return (0);
+	if (name - START_SYM > MAX_FIGS_COUNT)
+		return (-1);
+	if ((reads = read(fd, buf, 21)) < 20)
+		return ((reads == 0) ? (0) : (-1));
 	buf[reads] = '\0';
-	CHECK_INT(is_valid(buf));
-	CHECK_NULL(*fig = (t_row*)malloc(sizeof(t_row)));
-	CHECK_NULL(*fig = conv_str_to_fig(buf, *fig, sym++));
+	if (!is_valid(buf))
+		return (-1);
+	if (!(*fig = (t_row*)malloc(sizeof(t_row))))
+		return (-1);
+	*fig = conv_str_to_struct(buf, *fig, name++);
 	return (reads);
 }

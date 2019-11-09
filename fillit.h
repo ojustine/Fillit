@@ -6,7 +6,7 @@
 /*   By: ojustine <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/14 14:33:12 by ojustine          #+#    #+#             */
-/*   Updated: 2019/11/07 14:25:20 by ojustine         ###   ########.fr       */
+/*   Updated: 2019/11/09 19:15:01 by ojustine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,9 +14,9 @@
 # define FILLIT_H
 # define X 0
 # define Y 1
-# define DOWN down
 # define MAX_FIGS_COUNT 26
 # define START_SYM 'A'
+# define OBJ_SYM '#'
 # if (START_SYM < 32 || START_SYM > 126)
 #  error "non-printable character"
 # endif
@@ -65,7 +65,7 @@ typedef struct		s_node
 
 typedef struct		s_tet_params
 {
-	int				con;
+	int				touches;
 	int				nl;
 	int				obj;
 	int				dot;
@@ -80,7 +80,7 @@ typedef struct		s_stack
 
 ssize_t				get_next_fig(int fd, t_row **figs);
 void				error_exit(int err_code);
-void				add_figs_to_list(t_row **root, t_row *figs);
+t_row				*get_puzzle(int fd);
 void				solve(t_row **root);
 t_row				*create_cols_rows(t_row *figs_lst, t_col ***cols_ptr,
 					int *size);
@@ -88,5 +88,7 @@ void				link_matrix(t_row *root, t_col **cols, int size);
 void				destroy_matrix(t_row *root, t_col **cols, int size);
 int					algorithm_x(t_row *root, t_row ***sol, int f_count,
 					int depth);
+void				cover(t_row *(*r_stack)[], t_col *(*c_stack)[], int *r_cov,
+					int *c_cov);
 void				print_solution(t_row **sol, int figs_count, int size);
 #endif
