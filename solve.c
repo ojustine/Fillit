@@ -3,7 +3,7 @@
 /*                                                        :::      ::::::::   */
 /*   solve.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ojustine <ojustine@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ojustine <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/26 15:08:37 by ojustine          #+#    #+#             */
 /*   Updated: 2019/11/12 17:56:45 by ojustine         ###   ########.fr       */
@@ -44,11 +44,11 @@ void		solve(t_row **figs_lst)
 	t_col	**cols_ptr;
 	t_row	**sol;
 
-	cols_ptr = NULL;
 	figs_count = (*figs_lst)->up->name - START_SYM + 1;
 	if (!(sol = (t_row**)malloc(sizeof(t_row*) * figs_count)))
 		error_exit(1);
 	size = get_min_matrix_size(figs_count);
+	cols_ptr = NULL;
 	root = create_cols_rows(*figs_lst, &cols_ptr, &size);
 	link_matrix(root, cols_ptr, size);
 	while (algorithm_xx(root, &sol, figs_count, 0) != 1)

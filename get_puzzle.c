@@ -13,7 +13,7 @@
 #include "fillit.h"
 
 /*
-**	Adds an element to the list. Makes it circular
+**	Adds an element to the list. Makes list circular
 */
 
 static void	add_figs_to_list(t_row **root, t_row *fig)
