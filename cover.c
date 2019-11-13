@@ -6,7 +6,7 @@
 /*   By: ojustine <ojustine@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/07 16:51:05 by ojustine          #+#    #+#             */
-/*   Updated: 2019/11/09 19:17:56 by ojustine         ###   ########.fr       */
+/*   Updated: 2019/11/13 14:47:22 by ojustine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,39 +54,46 @@ static t_col	*cover_col(t_col *col)
 	return (col);
 }
 
-void			cover(t_row *(*r_stack)[], t_col *(*c_stack)[], int *r_cov,
-				int *c_cov)
+static void		cover_clones(t_row *root, t_row *row, t_row *(*r_stack)[],
+				int *r_stack_id)
 {
-	t_row	*curr;
 	t_row	*clone;
-	t_node	*rownode;
-	t_node	*colnode;
-	int		i;
 
-	curr = (*r_stack)[1];
-	clone = (*r_stack)[0]->down;
-	while (clone->name != curr->name + 1 && clone->name != '\0')
+	clone = root->down;
+	while (clone->name != row->name + 1 && clone != root)
 	{
-		if (clone->name == curr->name && clone != curr)
-			(*r_stack)[(*r_cov)++] = cover_row(clone);
+		if (clone->name == row->name && clone != row)
+			(*r_stack)[(*r_stack_id)++] = cover_row(clone);
 		clone = clone->down;
 	}
+}
+
+int				cover(t_row *(*r_stack)[], t_col *(*c_stack)[], t_node *node,
+				int *r_stack_id)
+{
+	t_node	*rownode;
+	t_node	*colnode;
+	int		c_stack_id;
+	int		i;
+
+	cover_clones((*r_stack)[0], node->row, r_stack, r_stack_id);
+	c_stack_id = 0;
 	i = 1;
-	rownode = curr->head;
-	while (rownode != curr->head || i)
+	rownode = node;
+	while (rownode != node || i--)
 	{
 		colnode = rownode->down;
 		while (colnode != rownode)
 		{
-			(*r_stack)[(*r_cov)++] = cover_row(colnode->row);
+			(*r_stack)[(*r_stack_id)++] = cover_row(colnode->row);
 			colnode = colnode->down;
 		}
-		(*c_stack)[(*c_cov)++] = rownode->col;
+		(*c_stack)[c_stack_id++] = rownode->col;
 		rownode = rownode->right;
-		i = 0;
 	}
-	(*r_stack)[(*r_cov)++] = cover_row(curr);
+	(*r_stack)[(*r_stack_id)++] = cover_row(node->row);
 	i = -1;
-	while (++i < *c_cov)
+	while (++i < c_stack_id)
 		cover_col((*c_stack)[i]);
+	return (c_stack_id);
 }

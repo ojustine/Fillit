@@ -6,7 +6,7 @@
 /*   By: ojustine <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/31 11:43:50 by ojustine          #+#    #+#             */
-/*   Updated: 2019/11/09 14:52:05 by ojustine         ###   ########.fr       */
+/*   Updated: 2019/11/12 16:16:09 by ojustine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,7 @@ static int		is_valid(const char *buf)
 	par.i = -1;
 	if (!(buf[4] == '\n' && buf[9] == '\n' && buf[14] == '\n'
 		&& buf[19] == '\n' && (buf[20] == '\n' || buf[20] == '\0')))
-		return (-1);
+		return (0);
 	while (buf[++par.i])
 	{
 		if (!(buf[par.i] == OBJ_SYM || buf[par.i] == '.' || buf[par.i] == '\n'))

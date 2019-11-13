@@ -6,7 +6,7 @@
 /*   By: ojustine <ojustine@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/05 14:13:53 by ojustine          #+#    #+#             */
-/*   Updated: 2019/11/05 15:29:45 by ojustine         ###   ########.fr       */
+/*   Updated: 2019/11/13 15:07:35 by ojustine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,8 +15,8 @@
 void	print_solution(t_row **sol, int f_count, int size)
 {
 	char	solution[size * size];
-	int 	i;
-	int 	j;
+	int		i;
+	int		j;
 
 	i = -1;
 	while (++i < size * size)

@@ -6,7 +6,7 @@
 /*   By: ojustine <ojustine@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/26 15:08:37 by ojustine          #+#    #+#             */
-/*   Updated: 2019/11/09 16:57:48 by ojustine         ###   ########.fr       */
+/*   Updated: 2019/11/12 17:56:45 by ojustine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,7 @@ void		solve(t_row **figs_lst)
 	size = get_min_matrix_size(figs_count);
 	root = create_cols_rows(*figs_lst, &cols_ptr, &size);
 	link_matrix(root, cols_ptr, size);
-	while (algorithm_x(root, &sol, figs_count, 0) != 1)
+	while (algorithm_xx(root, &sol, figs_count, 0) != 1)
 	{
 		destroy_matrix(root, cols_ptr, size);
 		size++;

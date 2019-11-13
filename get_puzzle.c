@@ -45,7 +45,7 @@ t_row		*get_puzzle(int fd)
 	t_row	*root;
 	ssize_t reads;
 
-	if (read(fd, 0, 0) != 0 || !(root = (t_row*)malloc(sizeof(t_row))))
+	if (!(root = (t_row*)malloc(sizeof(t_row))) || read(fd, 0, 0) != 0)
 		error_exit(1);
 	root->down = NULL;
 	while ((reads = get_next_fig(fd, &fig)) > 0)

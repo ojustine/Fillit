@@ -60,7 +60,7 @@ void		link_matrix(t_row *root, t_col **cols, int size)
 {
 	t_row	*rows;
 	int		i;
-	int 	approp_col_id;
+	int		approp_col_id;
 
 	rows = root->down;
 	while (rows != root)
