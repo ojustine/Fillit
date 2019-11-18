@@ -15,15 +15,16 @@
 int	main(int argc, char **argv)
 {
 	int		fd;
-	t_row	*root;
+	t_row	*puzzle;
 
 	if (argc == 2)
 	{
-		if ((fd = open(argv[1], O_RDONLY) < 0))
+		fd = open(argv[1], O_RDONLY);
+		if (fd < 0)
 			error_exit(1);
-		root = get_puzzle(fd);
+		puzzle = get_puzzle(fd);
 		close(fd);
-		solve(&root);
+		solve(puzzle);
 	}
 	else
 		error_exit(0);

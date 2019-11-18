@@ -6,31 +6,28 @@
 /*   By: ojustine <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/09 15:01:11 by ojustine          #+#    #+#             */
-/*   Updated: 2019/11/09 16:25:20 by ojustine         ###   ########.fr       */
+/*   Updated: 2019/11/14 11:04:04 by ojustine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "fillit.h"
 
 /*
-**	Adds an element to the list. Makes list circular
+**	Adds an element to the list. Makes it circular
 */
 
-static void	add_figs_to_list(t_row **root, t_row *fig)
+static void	add_figs_to_list(t_row **puzzle_root, t_row *fig)
 {
-	t_row *tmp;
-
-	if (!(*root)->down)
+	if (!(*puzzle_root)->down)
 	{
-		(*root)->down = *root;
-		(*root)->up = *root;
-		(*root)->name = '\0';
+		(*puzzle_root)->down = *puzzle_root;
+		(*puzzle_root)->up = *puzzle_root;
+		(*puzzle_root)->name = '\0';
 	}
-	tmp = (*root)->up;
-	tmp->down = fig;
-	tmp->down->down = *root;
-	tmp->down->up = tmp;
-	(*root)->up = tmp->down;
+	fig->down = *puzzle_root;
+	fig->up = (*puzzle_root)->up;
+	fig->up->down = fig;
+	fig->down->up = fig;
 }
 
 /*
@@ -42,15 +39,17 @@ static void	add_figs_to_list(t_row **root, t_row *fig)
 t_row		*get_puzzle(int fd)
 {
 	t_row	*fig;
-	t_row	*root;
+	t_row	*puzzle_root;
 	ssize_t reads;
 
-	if (!(root = (t_row*)malloc(sizeof(t_row))) || read(fd, 0, 0) != 0)
+	puzzle_root = (t_row*)malloc(sizeof(t_row));
+	if (!puzzle_root || read(fd, 0, 0) != 0)
 		error_exit(1);
-	root->down = NULL;
-	while ((reads = get_next_fig(fd, &fig)) > 0)
-		add_figs_to_list(&root, fig);
-	if (reads < 0 || !root->down)
+	puzzle_root->down = NULL;
+	reads = 0;
+	while ((reads = get_next_fig(fd, reads, &fig)) > 0)
+		add_figs_to_list(&puzzle_root, fig);
+	if (reads < 0 || puzzle_root->down == NULL)
 		error_exit(1);
-	return (root);
+	return (puzzle_root);
 }

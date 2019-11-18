@@ -21,10 +21,10 @@ static int		object_touches(int i, const char *obj)
 	int touches;
 
 	touches = 0;
-	touches += (*obj == OBJ_SYM && *(obj + 1) == OBJ_SYM);
-	touches += (i > 0 && *obj == OBJ_SYM && *(obj - 1) == OBJ_SYM);
-	touches += (i < 16 && *obj == OBJ_SYM && *(obj + 5) == OBJ_SYM);
-	touches += (i > 4 && *obj == OBJ_SYM && *(obj - 5) == OBJ_SYM);
+	touches += (*(obj + 1) == OBJ_SYM);
+	touches += (i > 0 && *(obj - 1) == OBJ_SYM);
+	touches += (i < 16 && *(obj + 5) == OBJ_SYM);
+	touches += (i > 4 && *(obj - 5) == OBJ_SYM);
 	return (touches);
 }
 
@@ -49,8 +49,8 @@ static int		is_valid(const char *buf)
 		return (0);
 	while (buf[++par.i])
 	{
-		if (!(buf[par.i] == OBJ_SYM || buf[par.i] == '.' || buf[par.i] == '\n'))
-			return (-1);
+		if (buf[par.i] != '.' && buf[par.i] != OBJ_SYM && buf[par.i] != '\n')
+			return (0);
 		if (buf[par.i] == OBJ_SYM)
 		{
 			par.obj++;
@@ -79,13 +79,10 @@ static int		shift_fig_to_0(const char *buf, int axis)
 	x = 0;
 	y = 0;
 	if (axis == Y)
-	{
 		while (buf[x] != OBJ_SYM)
 			if (buf[x++] == '\n')
 				shift++;
-	}
-	else
-	{
+	if (axis == X)
 		while (buf[y++ * 5 + x] != OBJ_SYM)
 			if (y == 4)
 			{
@@ -93,7 +90,6 @@ static int		shift_fig_to_0(const char *buf, int axis)
 				x++;
 				shift++;
 			}
-	}
 	return (shift);
 }
 
@@ -101,7 +97,7 @@ static int		shift_fig_to_0(const char *buf, int axis)
 **	Converts tetramino contained in the string buffer into a structure
 */
 
-static t_row	*conv_str_to_struct(char *buf, t_row *fig, char name)
+static void		conv_str_to_struct(char *buf, t_row **fig, char name)
 {
 	int		y;
 	int		x;
@@ -109,7 +105,7 @@ static t_row	*conv_str_to_struct(char *buf, t_row *fig, char name)
 	int		shift_x;
 	int		shift_y;
 
-	fig->name = name;
+	(*fig)->name = name;
 	shift_x = shift_fig_to_0(buf, X);
 	shift_y = shift_fig_to_0(buf, Y);
 	y = 0;
@@ -120,13 +116,12 @@ static t_row	*conv_str_to_struct(char *buf, t_row *fig, char name)
 		while (++x < 4)
 			if (buf[y * 5 + x] == OBJ_SYM)
 			{
-				fig->points[point][X] = (x - shift_x);
-				fig->points[point][Y] = (y - shift_y);
+				(*fig)->points[point][X] = (x - shift_x);
+				(*fig)->points[point][Y] = (y - shift_y);
 				point++;
 			}
 		y++;
 	}
-	return (fig);
 }
 
 /*
@@ -135,7 +130,7 @@ static t_row	*conv_str_to_struct(char *buf, t_row *fig, char name)
 **	Returns the number of bytes read if successful and -1 otherwise.
 */
 
-ssize_t			get_next_fig(int fd, t_row **fig)
+ssize_t			get_next_fig(int fd, ssize_t prev_reads, t_row **fig)
 {
 	char			buf[22];
 	ssize_t			reads;
@@ -144,12 +139,16 @@ ssize_t			get_next_fig(int fd, t_row **fig)
 	if (name - START_SYM > MAX_FIGS_COUNT)
 		return (-1);
 	if ((reads = read(fd, buf, 21)) < 20)
-		return ((reads == 0) ? (0) : (-1));
+	{
+		if (reads == 0 && prev_reads == 20)
+			return (0);
+		else
+			return (-1);
+	}
 	buf[reads] = '\0';
-	if (!is_valid(buf))
+	*fig = (t_row*)malloc(sizeof(t_row));
+	if (!(*fig) || !is_valid(buf))
 		return (-1);
-	if (!(*fig = (t_row*)malloc(sizeof(t_row))))
-		return (-1);
-	*fig = conv_str_to_struct(buf, *fig, name++);
+	conv_str_to_struct(buf, fig, name++);
 	return (reads);
 }

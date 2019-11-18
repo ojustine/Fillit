@@ -16,11 +16,11 @@ void	error_exit(int err_code)
 {
 	if (err_code == 0)
 	{
-		write(2, "usage: ./fillit source_file\n", 28);
+		write(1, "usage: ./fillit source_file\n", 28);
 	}
 	else if (err_code == 1)
 	{
-		write(2, "error\n", 6);
+		write(1, "error\n", 6);
 	}
 	exit(err_code);
 }

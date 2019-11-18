@@ -23,9 +23,9 @@ static void		uncover_row(t_row *row)
 	{
 		node->up->down = node;
 		node->down->up = node;
-		if (node->col->head == node->down)
-			node->col->head = node;
-		node->col->length++;
+//		if (node->col->head == node->down)
+//			node->col->head = node;
+//		node->col->length++;
 		node = node->right;
 	}
 	row->up->down = row;

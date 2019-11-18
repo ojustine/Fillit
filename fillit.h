@@ -6,7 +6,7 @@
 /*   By: ojustine <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/14 14:33:12 by ojustine          #+#    #+#             */
-/*   Updated: 2019/11/09 19:15:01 by ojustine         ###   ########.fr       */
+/*   Updated: 2019/11/15 11:52:11 by ojustine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,8 +26,6 @@
 # if (MAX_FIGS_COUNT > 100)
 #  warning "will seek a solution for years"
 # endif
-# define CHECK_NULL(x) if (!(x)) return (-1);////////////////
-# define CHECK_INT(x) if ((x) <= 0) return (-1);//////////////////////
 
 # include <stdlib.h>
 # include <string.h>
@@ -72,23 +70,19 @@ typedef struct		s_tet_params
 	ssize_t			i;
 }					t_tet_params;
 
-typedef struct		s_stack
-{
-	int 			is_row;
-	void			*data;
-}					t_stack;
-
-ssize_t				get_next_fig(int fd, t_row **figs);
-void				error_exit(int err_code);
-t_row				*get_puzzle(int fd);
-void				solve(t_row **root);
-t_row				*create_cols_rows(t_row *figs_lst, t_col ***cols_ptr,
-					int *size);
+ssize_t				get_next_fig(int fd, ssize_t prev_reads, t_row **figs);///NORM
+void				error_exit(int err_code);///NORM
+t_row				*get_puzzle(int fd);///NORM
+void				solve(t_row *puzzle);///NORM
+t_row				*create_cols_rows(t_row *puzzle, t_col ***cols_ptr,
+									   int *size);
 void				link_matrix(t_row *root, t_col **cols, int size);
 void				destroy_matrix(t_row *root, t_col **cols, int size);
-int					algorithm_x(t_row *root, t_row ***sol, int f_count,
-					int depth);
-void				cover(t_row *(*r_stack)[], t_col *(*c_stack)[], int *r_cov,
-					int *c_cov);
+int					algorithm_xxx(t_row *root, t_row ***sol, int f_count,
+									 int depth);
+int					cover(t_row *(*r_stack)[], t_col *(*c_stack)[], t_node *node,
+					int *r_stack_id);
+void				uncover(t_row *row_stack[], t_col *col_stack[], int *r_stack_id,
+					int *c_stack_id);
 void				print_solution(t_row **sol, int figs_count, int size);
 #endif

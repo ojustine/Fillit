@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   create_cols_rows.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ojustine <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: ojustine <ojustine@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/31 11:44:30 by ojustine          #+#    #+#             */
-/*   Updated: 2019/11/05 12:41:47 by ojustine         ###   ########.fr       */
+/*   Updated: 2019/11/14 14:31:17 by ojustine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,20 +22,23 @@
 **	size). Columns are named from 1 to size^2. All columns are added to a
 **	circular doubly linked list.
 **	An example with the size of the proposed solution 3:
-**							|1|2|3|    cols[0] = {.length = 0, .name = 1}
-**	cols[size * size]   =>	|4|5|6| => cols[1] = {.length = 0, .name = 2}
-**							|7|8|9|     ... and so on
+**	                        |1|2|3|    cols[0] = {.length = 0, .name = 1}
+**	cols[size * size]   =>  |4|5|6| => cols[1] = {.length = 0, .name = 2}
+**	                        |7|8|9|    cols[8] = {.length = 0, .name = 9}
 */
+
 static void		create_cols(t_col ***cols, int size)
 {
 	int		i;
 
-	if (!(*cols = (t_col**)malloc(sizeof(t_col*) * (size * size))))
+	*cols = (t_col**)malloc(sizeof(t_col*) * (size * size));
+	if (!(*cols))
 		error_exit(1);
 	i = 0;
 	while (i < size * size)
 	{
-		if (!((*cols)[i] = (t_col*)malloc(sizeof(t_col))))
+		(*cols)[i] = (t_col*)malloc(sizeof(t_col));
+		if (!(*cols)[i])
 			error_exit(1);
 		(*cols)[i]->name = i + 1;
 		(*cols)[i]->length = 0;
@@ -50,29 +53,30 @@ static void		create_cols(t_col ***cols, int size)
 	(*cols)[size * size - 1]->right = (*cols)[0];
 }
 
-static int		is_fits(t_row *figs, int size, int x, int y)
+static int		is_fits(t_row *fig, int size, int x, int y)
 {
 	int i;
 
 	i = 0;
 	while (i < 4)
 	{
-		if (figs->points[i][X] + x >= size || figs->points[i][Y] + y >= size)
+		if (fig->points[i][X] + x >= size || fig->points[i][Y] + y >= size)
 			return (0);
 		i++;
 	}
 	return (1);
 }
 
-static void		add_row(t_row **rows, t_row *figs, int x, int y)
+static void		add_row(t_row **rows, t_row *fig, int x, int y)
 {
 	t_row	*row;
 	int		i;
 
-	if (!(row = (t_row*)malloc(sizeof(t_row))))
+	row = (t_row*)malloc(sizeof(t_row));
+	if (!row)
 		error_exit(1);
 	row->length = 0;
-	row->name = figs->name;
+	row->name = fig->name;
 	row->up = row;
 	row->down = row;
 	if (*rows != NULL)
@@ -85,14 +89,14 @@ static void		add_row(t_row **rows, t_row *figs, int x, int y)
 	i = 0;
 	while (i < 4)
 	{
-		row->points[i][X] = figs->points[i][X] + x;
-		row->points[i][Y] = figs->points[i][Y] + y;
+		row->points[i][X] = fig->points[i][X] + x;
+		row->points[i][Y] = fig->points[i][Y] + y;
 		i++;
 	}
 	*rows = row;
 }
 
-static t_row	*create_rows(t_row *figs_lst, int size)
+static t_row	*create_rows(t_row *puzzle, int size)
 {
 	t_row	*figs;
 	t_row	*rows;
@@ -100,8 +104,8 @@ static t_row	*create_rows(t_row *figs_lst, int size)
 	int		shift_y;
 
 	rows = NULL;
-	figs = figs_lst->down;
-	while (figs != figs_lst)
+	figs = puzzle->down;
+	while (figs != puzzle)
 	{
 		shift_y = -1;
 		while (++shift_y < size)
@@ -128,13 +132,13 @@ static t_row	*create_rows(t_row *figs_lst, int size)
 **	More details in the description of inner functions.
 */
 
-t_row			*create_cols_rows(t_row *figs_lst, t_col ***cols_ptr, int *size)
+t_row			*create_cols_rows(t_row *puzzle, t_col ***cols_ptr, int *size)
 {
 	t_row	*root;
 	t_row	*rows;
 
 	rows = NULL;
-	while ((rows = create_rows(figs_lst, *size)) == NULL)
+	while ((rows = create_rows(puzzle, *size)) == NULL)
 		(*size)++;
 	create_cols(cols_ptr, *size);
 	if (!(root = (t_row*)malloc(sizeof(t_row))))
