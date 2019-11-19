@@ -12,15 +12,19 @@
 
 #include "fillit.h"
 
+/*
+**	Frees all memory allocated for the matrix structures.
+*/
+
 void	destroy_matrix(t_row *root, t_col **cols, int size)
 {
 	t_row	*tmp_row;
-	t_row	*beg_row;
+	t_row	*last_row;
 	t_node	*tmp_node;
 	int		i;
 
-	beg_row = root->up;
-	while (root != beg_row)
+	last_row = root->up;
+	while (root != last_row)
 	{
 		tmp_row = root;
 		root = root->down;

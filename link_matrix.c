@@ -28,11 +28,17 @@ static void	insert_node_in_col(t_node *head, t_node *new)
 	new->down->up = new;
 }
 
+/*
+**	Accepts row and column pointers.
+**	Creates a node at the intersection of row and column.
+*/
+
 static void	add_node(t_row *row, t_col *col)
 {
 	t_node *node;
 
-	if (!(node = (t_node*)malloc(sizeof(t_node))))
+	node = (t_node*)malloc(sizeof(t_node));
+	if (!node)
 		error_exit(1);
 	node->row = row;
 	node->col = col;
@@ -56,6 +62,27 @@ static void	add_node(t_row *row, t_col *col)
 	col->length++;
 }
 
+/*
+**	Accepts a pointer to the root row, a pointer to an array of columns,
+**	and the proposed size of the solution. Links columns and rows with
+**	each other in a matrix using the t_node structure.
+**
+**	Each row is linked with four nodes, one node per figure object.
+**	Each node is associated with a column.
+**	This means each row is associated with four columns.
+**
+**	For example (1 figure, size = 3):
+**	Figure:       Rows:     Cols:          Matrix:
+**
+**	|##..$|  =>  |AA.  .AA  |1|2|3||  =>  |      cols>|1|2|3|4|5|6|7|8|9||
+**	|##..$|  =>  |AA.  .AA  |4|5|6||  =>  |root->row1 |h-h-+-h-h-+-+-+-+||
+**	|....$|  =>  |...  ...  |7|8|9||  =>  |      row2 |+-h-n-+-n-n-+-+-+||
+**	|....$|  =>  |                 |  =>  |      row3 |+-+-+-h-n-+-n-n-+||
+**	|$    |  =>  |...  ...         |  =>  |      row4 |+-+-+-+-h-n-+-n-n||
+**	         =>  |AA.  .AA         |  =>  |                              |
+**	         =>  |AA.  .AA         |  =>  |                              |
+*/
+
 void		link_matrix(t_row *root, t_col **cols, int size)
 {
 	t_row	*rows;
@@ -68,7 +95,7 @@ void		link_matrix(t_row *root, t_col **cols, int size)
 		i = 0;
 		while (i < 4)
 		{
-			approp_col_id = rows->points[i][Y] * size + rows->points[i][X];
+			approp_col_id = rows->objs[i][Y] * size + rows->objs[i][X];
 			add_node(rows, cols[approp_col_id]);
 			i++;
 		}

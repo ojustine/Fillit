@@ -116,8 +116,8 @@ static void		conv_str_to_struct(char *buf, t_row **fig, char name)
 		while (++x < 4)
 			if (buf[y * 5 + x] == OBJ_SYM)
 			{
-				(*fig)->points[point][X] = (x - shift_x);
-				(*fig)->points[point][Y] = (y - shift_y);
+				(*fig)->objs[point][X] = (x - shift_x);
+				(*fig)->objs[point][Y] = (y - shift_y);
 				point++;
 			}
 		y++;
@@ -125,8 +125,9 @@ static void		conv_str_to_struct(char *buf, t_row **fig, char name)
 }
 
 /*
-**	Accepts fd and pointer to a structure. Reads a figure from file,
-**	checks its validity and writes it to the structure.
+**	Accepts fd, number of bytes read of the previous call to this function,
+**	and address of pointer to a structure. Reads a figure from file,
+**	checks its validity and writes it at address to the structure.
 **	Returns the number of bytes read if successful and -1 otherwise.
 */
 

@@ -37,7 +37,7 @@ static void	free_puzzle(t_row *puzzle)
 **	Explanation:
 **	All figures consist of four objects ("#").
 **	That is, a square with side N can contain (N ^ 2) / 4 figures,
-**	if all of them are squares.
+**	if all of them are squares (at best case).
 */
 
 static int	get_min_matrix_size(int figs_count)
@@ -52,6 +52,9 @@ static int	get_min_matrix_size(int figs_count)
 
 /*
 **	It brings together all parts of the program.
+**	Using an algorithm X, tries to place the figures in a square with side size.
+**	If the figures do not fit, increase the size and try again.
+**	Repeats until solution is found.
 **	Before exiting, cleans the memory.
 */
 

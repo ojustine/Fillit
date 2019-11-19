@@ -19,8 +19,7 @@
 **	proposed solution (i.e., size^2). For each pointer from the array,
 **	a structure of type t_col is created, which has the Name and Length fields.
 **	One column is one corresponding cell of a possible solution (for a given
-**	size). Columns are named from 1 to size^2. All columns are added to a
-**	circular doubly linked list.
+**	size). Columns are named from 1 to size^2.
 **	An example with the size of the proposed solution 3:
 **	                        |1|2|3|    cols[0] = {.length = 0, .name = 1}
 **	cols[size * size]   =>  |4|5|6| => cols[1] = {.length = 0, .name = 2}
@@ -40,32 +39,36 @@ static void		create_cols(t_col ***cols, int size)
 		(*cols)[i] = (t_col*)malloc(sizeof(t_col));
 		if (!(*cols)[i])
 			error_exit(1);
-		(*cols)[i]->name = i + 1;
 		(*cols)[i]->length = 0;
-		if (i > 0)
-		{
-			(*cols)[i]->left = (*cols)[i - 1];
-			(*cols)[i - 1]->right = (*cols)[i];
-		}
 		i++;
 	}
-	(*cols)[0]->left = (*cols)[size * size - 1];
-	(*cols)[size * size - 1]->right = (*cols)[0];
 }
+
+/*
+**	Accepts a pointer to a figure, proposed size of the future solution,
+**	and integers x and y. Returns 1 if the given figure with a shift by x and y
+**	can be placed in the given size. Returns 0 if not.
+*/
 
 static int		is_fits(t_row *fig, int size, int x, int y)
 {
-	int i;
+	int obj;
 
-	i = 0;
-	while (i < 4)
+	obj = 0;
+	while (obj < 4)
 	{
-		if (fig->points[i][X] + x >= size || fig->points[i][Y] + y >= size)
+		if (fig->objs[obj][X] + x >= size || fig->objs[obj][Y] + y >= size)
 			return (0);
-		i++;
+		obj++;
 	}
 	return (1);
 }
+
+/*
+**	Accepts a pointer to rows list, a pointer to a figure, integers x and y.
+**	Allocates memory for a row. Writes the given figure into it with a shift by
+**	x and y. Adds a row to the rows list.
+*/
 
 static void		add_row(t_row **rows, t_row *fig, int x, int y)
 {
@@ -89,12 +92,19 @@ static void		add_row(t_row **rows, t_row *fig, int x, int y)
 	i = 0;
 	while (i < 4)
 	{
-		row->points[i][X] = fig->points[i][X] + x;
-		row->points[i][Y] = fig->points[i][Y] + y;
+		row->objs[i][X] = fig->objs[i][X] + x;
+		row->objs[i][Y] = fig->objs[i][Y] + y;
 		i++;
 	}
 	*rows = row;
 }
+
+/*
+**	Accepts a pointer to a list of figures and the proposed size of the future
+**	solution. Returns a circular doubly linked list, which are all possible
+**	positions of each figure for a given size. Each row is one of the positions
+**	of a certain figure.
+*/
 
 static t_row	*create_rows(t_row *puzzle, int size)
 {
@@ -126,9 +136,11 @@ static t_row	*create_rows(t_row *puzzle, int size)
 /*
 **	Accepts a pointer to a list of figures, a pointer address for future columns
 **	and a solution size address. Creates columns at the received address.
-**	Creates rows and the root row (empty) included in the row list. Returns a
-**	pointer to the root. If necessary, the minimum required size of the future
-**	solution is increased.
+**	Creates rows and the root row (empty). All rows and root row are added to
+**	a circular doubly linked list
+**	Returns a pointer to the root.
+**	If necessary, the minimum required size of the future
+**	solution is increased (e.g. figure "stick" and size 3).
 **	More details in the description of inner functions.
 */
 
@@ -143,7 +155,7 @@ t_row			*create_cols_rows(t_row *puzzle, t_col ***cols_ptr, int *size)
 	create_cols(cols_ptr, *size);
 	if (!(root = (t_row*)malloc(sizeof(t_row))))
 		error_exit(1);
-	root->name = '\0';
+	root->name = 0;
 	root->down = rows;
 	root->up = rows->up;
 	root->up->down = root;

@@ -17,8 +17,8 @@
 # define MAX_FIGS_COUNT 26
 # define START_SYM 'A'
 # define OBJ_SYM '#'
-# if (START_SYM < 32 || START_SYM > 126)
-#  error "non-printable character"
+# if (START_SYM < 32 || START_SYM > 126 || START_SYM + MAX_FIGS_COUNT > 126)
+#  error "non-printable characters"
 # endif
 # if (MAX_FIGS_COUNT < 1)
 #  error "the number of figures cannot be less than one"
@@ -35,7 +35,7 @@
 typedef struct		s_row
 {
 	char			name;
-	int				points[4][2];
+	int				objs[4][2];
 	int				length;
 	struct s_row	*down;
 	struct s_row	*up;
@@ -44,10 +44,7 @@ typedef struct		s_row
 
 typedef struct		s_col
 {
-	int				name;
 	int				length;
-	struct s_col	*left;
-	struct s_col	*right;
 	struct s_node	*head;
 }					t_col;
 
@@ -70,19 +67,15 @@ typedef struct		s_tet_params
 	ssize_t			i;
 }					t_tet_params;
 
-ssize_t				get_next_fig(int fd, ssize_t prev_reads, t_row **figs);///NORM
-void				error_exit(int err_code);///NORM
-t_row				*get_puzzle(int fd);///NORM
-void				solve(t_row *puzzle);///NORM
+ssize_t				get_next_fig(int fd, ssize_t prev_reads, t_row **figs);
+void				error_exit(int err_code);
+t_row				*get_puzzle(int fd);
+void				solve(t_row *puzzle);
 t_row				*create_cols_rows(t_row *puzzle, t_col ***cols_ptr,
-									   int *size);
+					int *size);
 void				link_matrix(t_row *root, t_col **cols, int size);
 void				destroy_matrix(t_row *root, t_col **cols, int size);
 int					algorithm_xxx(t_row *root, t_row ***sol, int f_count,
-									 int depth);
-int					cover(t_row *(*r_stack)[], t_col *(*c_stack)[], t_node *node,
-					int *r_stack_id);
-void				uncover(t_row *row_stack[], t_col *col_stack[], int *r_stack_id,
-					int *c_stack_id);
+					int depth);
 void				print_solution(t_row **sol, int figs_count, int size);
 #endif

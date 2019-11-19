@@ -33,7 +33,7 @@ static void	add_figs_to_list(t_row **puzzle_root, t_row *fig)
 /*
 **	Accepts the file descriptor received in the main. Returns a circular doubly
 **	linked list, each element of which is one tetramino with parameters
-**	(name, coordinates of four objects "#")
+**	(name, coordinates of four objects OBJ_SYM ("#" by default))
 */
 
 t_row		*get_puzzle(int fd)

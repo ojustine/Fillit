@@ -12,6 +12,10 @@
 
 #include "fillit.h"
 
+/*
+**	Terminates the program. Displays an error message.
+*/
+
 void	error_exit(int err_code)
 {
 	if (err_code == 0)
