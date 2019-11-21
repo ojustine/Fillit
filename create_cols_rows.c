@@ -55,7 +55,7 @@ static int		is_fits(t_row *fig, int size, int x, int y)
 	int obj;
 
 	obj = 0;
-	while (obj < 4)
+	while (obj < MODE)
 	{
 		if (fig->objs[obj][X] + x >= size || fig->objs[obj][Y] + y >= size)
 			return (0);
@@ -90,7 +90,7 @@ static void		add_row(t_row **rows, t_row *fig, int x, int y)
 		row->down->up = row;
 	}
 	i = 0;
-	while (i < 4)
+	while (i < MODE)
 	{
 		row->objs[i][X] = fig->objs[i][X] + x;
 		row->objs[i][Y] = fig->objs[i][Y] + y;

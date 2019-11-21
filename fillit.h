@@ -14,17 +14,31 @@
 # define FILLIT_H
 # define X 0
 # define Y 1
+
+/*
+**	A macro MODE is a fillit operation mode. Use 3 for triomino, 4 for tetramino
+**	5 for pentamino and so on.
+*/
+
+# define MODE 4
 # define MAX_FIGS_COUNT 26
-# define START_SYM 'A'
+# define START_NAME 'A'
 # define OBJ_SYM '#'
-# if (START_SYM < 32 || START_SYM > 126 || START_SYM + MAX_FIGS_COUNT > 126)
-#  error "non-printable characters"
+# define EMPTY_SYM '.'
+# if (START_NAME < 32 || START_NAME > 126)
+#  error "Non-printable characters"
+# endif
+# if (START_NAME + MAX_FIGS_COUNT > 126)
+#  error "The figure name falls outside the ASCII table"
 # endif
 # if (MAX_FIGS_COUNT < 1)
-#  error "the number of figures cannot be less than one"
+#  error "The number of figures cannot be less than one"
 # endif
-# if (MAX_FIGS_COUNT > 100)
-#  warning "will seek a solution for years"
+# if (MODE > 9)
+#  error "Dont tested whith MODE > 10"
+# endif
+# if (MODE < 1)
+#  error "The figure must consist of at least one object"
 # endif
 
 # include <stdlib.h>
@@ -35,7 +49,7 @@
 typedef struct		s_row
 {
 	char			name;
-	int				objs[4][2];
+	int				objs[MODE][2];
 	int				length;
 	struct s_row	*down;
 	struct s_row	*up;
@@ -55,17 +69,16 @@ typedef struct		s_node
 	struct s_node	*left;
 	struct s_node	*right;
 	struct s_row	*row;
-	struct s_col	*col;
 }					t_node;
 
-typedef struct		s_tet_params
+typedef struct		s_fig_params
 {
 	int				touches;
-	int				nl;
+	int				nls;
 	int				obj;
-	int				dot;
+	int				emp;
 	ssize_t			i;
-}					t_tet_params;
+}					t_fig_params;
 
 ssize_t				get_next_fig(int fd, ssize_t prev_reads, t_row **figs);
 void				error_exit(int err_code);

@@ -31,7 +31,7 @@ void	print_solution(t_row **sol, int f_count, int size)
 	while (++i < f_count)
 	{
 		obj = -1;
-		while (++obj < 4)
+		while (++obj < MODE)
 		{
 			str_obj = sol[i]->objs[obj][Y] * size + sol[i]->objs[obj][X];
 			str_sol[str_obj] = sol[i]->name;

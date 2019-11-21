@@ -18,9 +18,14 @@
 
 void	error_exit(int err_code)
 {
+	char mode;
+
+	mode = MODE + 48;
 	if (err_code == 0)
 	{
-		write(1, "usage: ./fillit source_file\n", 28);
+		write(1, "usage: ./fillit ", 16);
+		write(1, &mode, 1);
+		write(1, "-mino_source_file\n", 18);
 	}
 	else if (err_code == 1)
 	{

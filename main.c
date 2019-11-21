@@ -12,6 +12,10 @@
 
 #include "fillit.h"
 
+/*
+**	Just main function.
+*/
+
 int	main(int argc, char **argv)
 {
 	int		fd;

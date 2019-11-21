@@ -44,8 +44,8 @@ static int	get_min_matrix_size(int figs_count)
 {
 	int size;
 
-	size = 2;
-	while (size * size / 4 < figs_count)
+	size = MODE / 2;
+	while (size * size / MODE < figs_count)
 		size++;
 	return (size);
 }
@@ -67,7 +67,7 @@ void		solve(t_row *puzzle)
 	t_row	**sol;
 
 	cols_ptr = NULL;
-	figs_count = puzzle->up->name - START_SYM + 1;
+	figs_count = puzzle->up->name - START_NAME + 1;
 	if (!(sol = (t_row**)malloc(sizeof(t_row*) * figs_count)))
 		error_exit(1);
 	size = get_min_matrix_size(figs_count);

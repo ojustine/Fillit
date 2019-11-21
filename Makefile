@@ -1,3 +1,15 @@
+# **************************************************************************** #
+#                                                                              #
+#                                                         :::      ::::::::    #
+#    Makefile                                           :+:      :+:    :+:    #
+#                                                     +:+ +:+         +:+      #
+#    By: ojustine <marvin@42.fr>                    +#+  +:+       +#+         #
+#                                                 +#+#+#+#+#+   +#+            #
+#    Created: 2019/11/21 13:27:35 by ojustine          #+#    #+#              #
+#    Updated: 2019/11/21 13:27:43 by ojustine         ###   ########.fr        #
+#                                                                              #
+# **************************************************************************** #
+
 FLAGS = -Wall -Wextra -Werror
 NAME = fillit
 
@@ -23,8 +35,8 @@ all: $(NAME)
 $(NAME): $(OBJS)
 	gcc -o fillit $(OBJS)
 
-$(OBJS):
-	gcc $(FLAGS) -c $(SRCS)
+.c.o : fillit.h
+	gcc $(FLAGS) -c $< -o $@
 
 clean:
 	rm -f $(OBJS)

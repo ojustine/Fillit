@@ -41,7 +41,6 @@ static void	add_node(t_row *row, t_col *col)
 	if (!node)
 		error_exit(1);
 	node->row = row;
-	node->col = col;
 	if (row->length == 0)
 	{
 		row->head = node;
@@ -93,7 +92,7 @@ void		link_matrix(t_row *root, t_col **cols, int size)
 	while (rows != root)
 	{
 		i = 0;
-		while (i < 4)
+		while (i < MODE)
 		{
 			approp_col_id = rows->objs[i][Y] * size + rows->objs[i][X];
 			add_node(rows, cols[approp_col_id]);

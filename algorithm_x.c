@@ -96,15 +96,15 @@ static void		uncover(t_row *row_stack[], int *row_stack_id)
 
 int				algorithm_xxx(t_row *root, t_row ***sol, int f_count, int depth)
 {
-	t_row	*row_stack[f_count * 9];
+	t_row	*row_stack[f_count * 100];
 	t_row	*row;
 	int		row_stack_id;
 
 	row_stack_id = 0;
 	row = root->down;
-	while (row != root && row->name != START_SYM + depth)
+	while (row != root && row->name != START_NAME + depth)
 		row = row->down;
-	while (row != root && row->name == (START_SYM + depth))
+	while (row != root && row->name == (START_NAME + depth))
 	{
 		(*sol)[depth] = row;
 		cover(&row_stack, &row_stack_id, row);

@@ -18,17 +18,17 @@
 
 void	destroy_matrix(t_row *root, t_col **cols, int size)
 {
-	t_row	*tmp_row;
+	t_row	*to_free_row;
 	t_row	*last_row;
-	t_node	*tmp_node;
+	t_node	*to_free_node;
 	int		i;
 
 	last_row = root->up;
 	while (root != last_row)
 	{
-		tmp_row = root;
+		to_free_row = root;
 		root = root->down;
-		free(tmp_row);
+		free(to_free_row);
 	}
 	free(root);
 	i = -1;
@@ -36,9 +36,9 @@ void	destroy_matrix(t_row *root, t_col **cols, int size)
 	{
 		while (cols[i]->length--)
 		{
-			tmp_node = cols[i]->head;
+			to_free_node = cols[i]->head;
 			cols[i]->head = cols[i]->head->down;
-			free(tmp_node);
+			free(to_free_node);
 		}
 		free(cols[i]);
 	}
